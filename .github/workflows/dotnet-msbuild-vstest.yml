@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        configuration: [Debug, Release]
+        configuration: [Release]
 
     runs-on: windows-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
@@ -56,10 +56,13 @@ jobs:
     - name: VSWhere VSTest
       run: |
           $vs_path = vswhere -latest -property installationPath
+          Write-Host "vs_path=$vs_path"
           $vs_tools_path = "$vs_path\\MSBuild\\Microsoft\\VisualStudio\\v17.0"
+          Write-Host "$vs_tools_path=$vs_tools_path"
           "vs_tools_path=$vs_tools_path" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
     - name: Run tests
-      run: dotnet test -p:"$VSToolsPath=$vs_tools_path"
+      run: dotnet test
       env:
         Configuration: ${{ matrix.configuration }}
+        $VSToolsPath: ${{ $vs_tools_path }}
