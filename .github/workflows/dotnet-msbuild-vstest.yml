@@ -48,20 +48,17 @@ jobs:
         Configuration: ${{ matrix.configuration }}
 
     # Build the application
-    - name: Restore the application
+    - name: Build the application
       run: msbuild $env:Solution_Name /t:Build /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
 
+    - name: VSWhere VSTest
+      run: |
+          $rootDir = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+          "$vs_tools_path=$rootDir\\MSBuild\\Microsoft\\VisualStudio\\v17.0" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
     - name: Run tests
-      uses: microsoft/vstest-action@main
-      with:
-        testAssembly: |
-          **\*.Tests.dll
-          !**\*TestAdapter.dll
-          !**\*TestCentric*.dll
-          !**\*TestHost*.dll
-          !**\*TestPlatform*.dll
-          !**\obj\**
-        searchFolder: ./tests/
-        runInParallel: true
+      run: dotnet test -p:"$VSToolsPath=$vs_tools_path"
+      env:
+        Configuration: ${{ matrix.configuration }}
