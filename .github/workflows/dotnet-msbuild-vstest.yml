@@ -53,7 +53,8 @@ jobs:
       env:
         Configuration: ${{ matrix.configuration }}
 
-    - name: VSWhere VSTest
+    - name: VSWhere VSToolsPath
+      id: vswhere-vs-tools-path
       run: |
           $vs_path = vswhere -latest -property installationPath
           Write-Host "vs_path=$vs_path"
@@ -65,4 +66,4 @@ jobs:
       run: dotnet test
       env:
         Configuration: ${{ matrix.configuration }}
-        $VSToolsPath: ${{ $vs_tools_path }}
+        VSToolsPath: ${{ steps.vswhere-vs-tools-path.outputs.vs_tools_path }}
