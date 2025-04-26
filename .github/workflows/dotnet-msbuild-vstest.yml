@@ -58,8 +58,8 @@ jobs:
       run: |
           $vs_path = vswhere -latest -property installationPath
           Write-Host "vs_path=$vs_path"
-          $vs_tools_path = "$vs_path\\MSBuild\\Microsoft\\VisualStudio\\v17.0"
-          Write-Host "$vs_tools_path=$vs_tools_path"
+          $vs_tools_path = "$vs_path\MSBuild\Microsoft\VisualStudio\v17.0"
+          Write-Host "vs_tools_path=$vs_tools_path"
           "vs_tools_path=$vs_tools_path" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
     - name: Run tests
