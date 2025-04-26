@@ -67,7 +67,7 @@ jobs:
           "vs_tools_path=$vs_tools_path" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
     - name: Run tests
-      run: dotnet test --verbosity normal --logger trx --collect:"XPlat Code Coverage"
+      run: dotnet test --no-build --verbosity normal --logger trx --collect:"XPlat Code Coverage"
       env:
         Configuration: ${{ matrix.configuration }}
         VSToolsPath: ${{ steps.vswhere-vs-tools-path.outputs.vs_tools_path }}
@@ -90,36 +90,19 @@ jobs:
         name: coverage
         path: ${{ github.workspace }}/Cobertura.xml
         retention-days: 5
-    - name: Publish Code Coverage Report
-      uses: irongut/CodeCoverageSummary@v1.3.0
-      with:
-        filename: "Cobertura.xml"
-        badge: true
-        fail_below_min: false # just informative for now
-        format: markdown
-        hide_branch_rate: false
-        hide_complexity: false
-        indicators: true
-        output: both
-        thresholds: "10 30"
-          
-    - name: Add Coverage PR Comment
-      uses: marocchino/sticky-pull-request-comment@v2
-      if: github.event_name == 'pull_request'
-      with:
-        recreate: true
-        path: code-coverage-results.md
-      
-    - name: Upload Test Result Files
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-results
-        path: ${{ github.workspace }}/**/TestResults/**/*
-        retention-days: 5
-          
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v2.18.0
+
+    - name: Restore local tools
+      run: dotnet tool restore
+ 
+    - name: Generate code coverage Markdown report
+      run: dotnet reportgenerator -reports:**/coverage.cobertura.xml -targetdir:./coverage -reporttypes:MarkdownSummary
+ 
+    - name: Create check run with code coverage Markdown report
+      uses: LouisBrunner/checks-action@v1.2.0
       if: always()
       with:
-        # NOTE: using trx_files instead of files due to https://github.com/EnricoMi/publish-unit-test-result-action/issues/424
-        trx_files: "${{ github.workspace }}/**/*.trx"
+        token: ${{ secrets.GITHUB_TOKEN }}
+        name: Code coverage
+        conclusion: ${{ job.status }}
+        output: '{"summary":"Code coverage"}'
+        output_text_description_file: coverage/Summary.md
