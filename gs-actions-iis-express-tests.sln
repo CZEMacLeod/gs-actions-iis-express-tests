@@ -10,6 +10,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C3D.IISTestapp.Tests", "tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C3D.IISOwinApp", "src\C3D.IISOwinApp\C3D.IISOwinApp.csproj", "{E3A4F49C-7044-0025-74F8-8322B7A1BFE9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{F35B149D-EE86-48B2-920E-82F0DE401AEF}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		LICENSE.txt = LICENSE.txt
+		.github\workflows\dotnet-msbuild-vstest.yml = .github\workflows\dotnet-msbuild-vstest.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
