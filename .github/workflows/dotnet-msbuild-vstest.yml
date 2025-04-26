@@ -54,7 +54,7 @@ jobs:
         Configuration: ${{ matrix.configuration }}
 
     - name: Run tests
-      uses: microsoft-approved-actions/vstest@main
+      uses: microsoft/vstest-action@main
       with:
         testAssembly: |
           **\*.Tests.dll
