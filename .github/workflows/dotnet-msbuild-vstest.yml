@@ -55,8 +55,9 @@ jobs:
 
     - name: VSWhere VSTest
       run: |
-          $rootDir = vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
-          "$vs_tools_path=$rootDir\\MSBuild\\Microsoft\\VisualStudio\\v17.0" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          $vs_path = vswhere -latest -property installationPath
+          $vs_tools_path = "$vs_path\\MSBuild\\Microsoft\\VisualStudio\\v17.0"
+          "vs_tools_path=$vs_tools_path" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
     - name: Run tests
       run: dotnet test -p:"$VSToolsPath=$vs_tools_path"
